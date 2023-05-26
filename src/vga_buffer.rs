@@ -86,11 +86,21 @@ impl Writer {
     }
 }
 
+use core::fmt;
+
+impl fmt::Write for Writer {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.write_string(s);
+        Ok(())
+    }
+}
+
 pub fn print_something() {
+    use core::fmt::Write;
     let mut writer = Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Pink, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
-    writer.write_string("TESTING");
+    write!(writer, "The calculations equal {} and {}", 42, 1.0/3.0).unwrap();
 }
