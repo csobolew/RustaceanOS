@@ -95,12 +95,13 @@ impl fmt::Write for Writer {
     }
 }
 
-pub fn print_something() {
-    use core::fmt::Write;
-    let mut writer = Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::Pink, Color::Black),
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
-    write!(writer, "The calculations equal {} and {}", 42, 1.0/3.0).unwrap();
-}
+use lazy_static::lazy_static;
+use spin::Mutex;
+
+lazy_static! {
+        pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+            column_position: 0,
+            color_code: ColorCode::new(Color::Yellow, Color::Black),
+            buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+        });
+    }
